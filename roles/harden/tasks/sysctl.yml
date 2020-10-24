@@ -49,13 +49,13 @@
       when: sysctl_overwrite | default()
 
     - name: Change various sysctl-settings, look at the sysctl-vars file for documentation
+      ignore_errors: yes
       sysctl:
         name: '{{ item.key }}'
         value: '{{ item.value }}'
         sysctl_set: true
         state: present
         reload: true
-        ignoreerrors: true
       with_dict: '{{ sysctl_config }}'
 
     - name: Change various sysctl-settings on rhel6-hosts or older, look at the sysctl-vars file for documentation

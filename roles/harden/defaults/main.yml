@@ -219,8 +219,8 @@ sysctl_config:
   # These settings are set to the maximum supported value in order to
   # improve ASLR effectiveness for mmap, at the cost of increased
   # address-space fragmentation. | Tail-1
-  vm.mmap_rnd_bits: 32
-  vm.mmap_rnd_compat_bits: 16
+  #vm.mmap_rnd_bits: 32
+  #vm.mmap_rnd_compat_bits: 16
 
   # When an attacker is trying to exploit the local kernel, it is often
   # helpful to be able to examine where in memory the kernel, modules,
