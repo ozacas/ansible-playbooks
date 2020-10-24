@@ -1,0 +1,56 @@
+---
+
+# based on blog post at: https://towardsdatascience.com/setup-your-home-jupyterhub-on-a-raspberry-pi-7ad32e20eed
+- name: ensure software is installed
+  pip:
+    executable: pip3
+    name: ['notebook', 'jupyterhub', 'pandas', 'plotnine', 'scipy', 'sktime']
+    state: present
+
+- name: rename existing config so as not to block new config
+  command: mv "{{ home }}/jupyterhub_config.py" "{{ home }}/jupyterhub_config.py.bak"
+
+- name: ensure key files and folders exist
+  file:
+    state: directory
+    mode: '0750'
+    owner: '{{ user }}'
+    group: '{{ group }}'
+    path: '{{ item }}'
+  with_items:
+    - "{{ home }}/data"
+    - "{{ home }}/notebooks"
+    
+- name: generate jupyterhub_config
+  command:
+    cmd: jupyterhub --generate-config
+    chdir: "{{ home }}"
+
+- name: install custom jupyterhub config to preferred specs
+  template:
+     src: "jupyterhub_config.py"
+     dest: "{{ home }}"
+     owner: "{{ user }}"
+     group: "{{ user }}"
+     mode: '0640'
+
+- name: install systemd unit
+  template:
+     src: "jupyterhub.service"
+     dest: "/etc/systemd/system"
+     owner: root
+     group: root
+     mode: '0644'
+
+- name: reload and enable service at boot
+  systemd:
+     daemon_reload: yes
+     enabled: yes
+     name: jupyterhub
+     state: restarted
+
+- name: install jupyterlab for next-gen data science interface
+  pip:
+    executable: pip3
+    name: 'jupyterlab'
+    state: present

@@ -1,0 +1,6 @@
+[all]
+pi8 ansible_ssh_user=k8s
+pi9 ansible_ssh_user=k8s
+
+[juypterhub]
+pi8

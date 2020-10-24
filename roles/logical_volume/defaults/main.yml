@@ -1,0 +1,9 @@
+---
+
+fs: "ext4"
+user: "k8s"
+group: "{{ user }}"
+lv: "juypter"
+vg: "k8s"
+size: "2G"
+# NB: mount must be specified, it is NOT defaulted

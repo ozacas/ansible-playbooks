@@ -1,0 +1,41 @@
+---
+
+- name: ensure logical volume exists
+  lvol:
+     lv: "{{ lv }}"
+     vg: "{{ vg }}"
+     state: present
+     size: "{{ size }}"
+  register: lv_status
+
+- name: put filesystem on it if we created the LV
+  filesystem:
+     fstype: "{{ fs }}"
+     dev: "/dev/{{ vg }}/{{ lv }}"
+     force: no
+  when:
+    - lv_status is changed
+    - lv_status is success
+
+- name: ensure mount point exists
+  file:
+    state: directory
+    mode: '0750'
+    path: "{{ mount }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+
+- name: mount LV
+  mount:
+    src: "/dev/{{ vg }}/{{ lv }}"
+    path: "{{ mount }}"
+    fstype: "{{ fs }}"
+    opts: rw,nosuid,noexec
+    state: mounted
+
+- name: ensure correct mount point ownership and contained files
+  file:
+    recurse: yes
+    path: "{{ mount }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"

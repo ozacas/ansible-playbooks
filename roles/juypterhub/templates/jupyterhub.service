@@ -1,0 +1,14 @@
+[Unit]
+Description=JupyterHub Service
+After=multi-user.target
+
+[Service]
+WorkingDirectory={{ home }}
+User={{ user }}
+ExecStart=/usr/bin/jupyterhub --config={{ home }}/jupyterhub_config.py
+Restart=on-failure
+StandardOutput=file:{{ home }}/jupyterhub.stdout
+StandardError=file:{{ home }}/jupyterhub.stderr
+
+[Install]
+WantedBy=multi-user.target

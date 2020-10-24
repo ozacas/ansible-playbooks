@@ -1,0 +1,17 @@
+---
+
+- name: create group iff needed
+  group:
+    name: "{{ group }}"
+    state: present
+    
+- name: create account if needed
+  user:
+    create_home: yes
+    name: "{{ username }}"
+    group: "{{ group }}"
+    state: present
+    shell: "{{ shell }}"
+    home: "{{ home }}"
+    password: '*'
+    password_lock: yes
